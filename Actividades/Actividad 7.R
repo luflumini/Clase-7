@@ -59,3 +59,4 @@ ggplot(data= propina,aes( x= fct_infreq(dia),fill=dia))+
   geom_bar()+
   coord_flip()
 
+
