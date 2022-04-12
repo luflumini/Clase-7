@@ -1,0 +1,190 @@
+---
+title: "Tarea individual 2"
+author: "Entregar el Lunes 11 de Abril"
+date: "Abril 2022"
+output:
+  pdf_document: default
+  fig_caption: FALSE
+---
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 50), tidy = TRUE, fig.pos = 'h', out.extra = '')
+```
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(gapminder)
+```
+## Entrega 
+
+Esta tarea tiene que estar disponible en su repositorio de GitHub en la carpeta Tareas . Asegurate que tanto Federico como yo seamos colaboradoras de tu proyecto privado STAT_NT.
+Recordar seleccionar en en opciones de proyecto, codificación de texto UTF-8.
+La tarea debe ser realizada en RMarkdown, la tarea es individual por lo que cada uno tiene que escribir su propia versión de la misma.
+El repositorio debe contener el archivo .Rmd con la solución de la tarea y los archivos que sean necesarios para su reproducibilidad que se evaluará.
+Vamos a utilizar la biblioteca `gapminder`, por lo que si no la usaste anteriormente tenés que instalarla y luego cargarla.
+Para obtener la descripción del paquete `library(help = "gapminder")` y para saber sobre la base `?gapminder`.
+
+Recordá que todas las Figuras deben ser autocontenidas, deben tener toda la información necesaria para que se entienda la información que se presenta. Todas las Figuras deben tener leyendas, títulos. El título (caption) debe contener el número de la Figura así como una breve explicación de la información en la misma. Adicionalmente en las Figuras los nombre de los ejes tienen que ser informativos.  En el YAML en Tarea_2.Rmd verás  `fig_caption: true` para que salgan los `caption` en el chunk de código debes incluir `fig.cap =` "Poner el que tipo de gráfico es y algún comentario interesante de lo que ves". Luego en el cuerpo del documento podés hacer comentarios  extendidos sobre lo que muestra la figura.
+
+##  Idea básica de regresión lineal  
+
+Una regresión lineal es una aproximación utilizada para modelar la relación entre dos variables que llamaremos `X` e `Y`. Donde Y es la variable que queremos explicar y X la variable explicativa (regresión simple).
+
+El análisis de regresión ajusta una curva a travéz  de los datos que representa la media de Y dado un valor especificado de X.
+Si ajustamos una regresión lineal a los datos consideramos "la curva media" como aquella que mejor ajusta a los datos.
+
+Algunas veces ajustamos curvas genéricas promediando puntos cercanos entre si con  métodos de suavizado no necesariamente lineales.
+¿Cómo incluimos una recta de regresión en nuestro gráfico?
+
+Para agregar una linea de regresión o una curva tinenes que agregar una capa a tu gráfico `geom_smoth`. Probablemente dos de los argumentos más útiles de `geom_smoth` son:
+
+- `method = ...`
+    * ..."lm" para una linea recta. `lm`  "Linear Model".
+    * ...otro para una curva genérica (llamada de suavizado; por defecto, es la parte `smooth` de `geom_smooth`).
+    * `se=...` controla si los intervalos de confianza son dibujados o no.
+
+Ejemplo:
+```{r, echo=TRUE}
+vc1 <- ggplot(gapminder, aes(year, lifeExp)) +
+    geom_point() 
+vc1 + geom_smooth(se = FALSE)
+
+```
+En este caso  `geom_smooth()` está usando `method = 'gam'`
+
+```{r, echo=TRUE}
+vc1 + geom_smooth(method = "lm")
+```
+
+
+
+## Ejercicio 1
+
+1. Hacer un gráfico de dispersión que tenga en el eje `x` `year` y en el eje `y`  `lifeExp`, los puntos deben estar coloreados por la variable `continent`. Para este plot ajustá una recta de regresión para cada continente sin incluir las barras de error. Las etiquetas de los ejes deben ser claras y describir las variables involucradas. Incluir un `caption` en la Figura con algún comentario de interés que describa el gráfico. El resto de los comentarios del graáfico se realizan en el texto.
+```{r}
+library(gapminder)
+library(ggplot2)
+ggplot(data = gapminder, aes(x=year,y=lifeExp,colour=continent)) + geom_point() + geom_smooth(method = "lm", se=FALSE) + labs(caption = "se ve un crecimiento de la expectativa de vida en todos los continentes, siendo mas notoria en Asia")
+```
+
+
+
+
+2. Omitir la capa de  `geom_point()` del gráfico anterior. Las lineas aún aparecen aunque los puntos no. ¿Porqué sucede esto? 
+
+Porque esta es solamente una capa, los datos estan cargados pero no directamente asociados al gráfico de disperción. 
+
+
+
+
+3. El siguiente es un gráfico de dispersión entre `lifeExp` y `gdpPercap`  coloreado por la variable `continent`. Usando como elemento estético color (`aes()`) nosotros podemos distinguir los distintos continentes usando diferentes colores de similar manera usando forma (`shape`).
+
+
+![](gap1.pdf){width=100%}
+
+El gráfico anterior está sobrecargado, ¿de que forma modificarías el gráfico para que sea más clara la comparación para los distintos continentes y porqué?
+Las etiquetas de los ejes deben ser claras y describir las variables involucradas. Comentá alguna característica interesante que describa lo que aprendes viendo el gráfico.
+
+
+
+4. Hacer un gráfico de lineas que tenga en el eje `x` `year` y en el eje `y`  `gdpPercap` para cada continente en una misma ventana gráfica. En cada continente, el gráfico debe contener una linea para cada país a lo largo del tiempo (serie de tiempo de `gdpPercap`). Las etiquetas de los ejes deben ser claras y describir las variables involucradas. Incluir un `caption` en la Figura con algún comentario de interés que describa el gráfico.
+
+```{r}
+
+ggplot(gapminder, aes(year, gdpPercap,color=country)) + geom_line() + facet_grid(~ continent,scales = "free") +
+  theme(axis.text.x = element_text(size = 8, color = "black",angle = 65), legend.position = 'none') + labs(caption = "Mientras que en Africa el creciemiento es mucho más lento, en continentes como Asia, el crecimiento esta siendo mucho más exponencial")
+```
+
+
+
+5. Usando los datos `gapminder` seleccione una visualización que describa algún aspecto de los datos que no exploramos. Comente algo interesante que se puede aprender de su gráfico.
+
+```{r}
+continente<-c("Americas","Africa")
+gapminder %>% 
+ filter(continent %in% continente) %>% 
+     ggplot() +
+     aes(x = gdpPercap, y = lifeExp, color = year) +
+     geom_point() +
+     facet_wrap( ~ continent) +
+     theme(axis.text.x = element_text(size = 8, color = "black",angle = 65))
+```
+
+
+
+## Ejercicio 2
+
+1. Con los datos `mpg` que se encuentran disponible en `ggplot2` hacer un gráfico de barras para la variables `drv` con las siguientes características:
+
+
+2. Las barras tienen que estar coloreadas por `drv`
+
+3. Incluir el nombre de los ejes y título informativo modificando el `scale` asociado, esto es sin usar `labs`.
+
+4. Usá `scale_colour_brewer()` para modificar la paleta de colores, seleccioná alguna paleta que sea apropiada para el problema, distinta a `Dark2`. ¿Qué tipo de paleta hay que seleccionar para la variable `drv`?
+
+```{r}
+ggplot(mpg,aes(drv,fill=drv))+ 
+  geom_bar() + 
+  scale_x_discrete(name="Drv")+ scale_y_discrete(name="Cantidad")+
+  scale_color_brewer(name="Paired")
+```
+
+Hay que seleccionar una de tipo discreta
+
+## Ejercicio 3
+
+ Usando como base el gráfico del Ejercicio 2:
+ 
+ 
+1. Incluir en el eje `y` porcentaje en vez de conteos
+
+2.  Usando `scale_y_continuous()` cambiar la escala del eje `y` a porcentajes
+
+3. Usando `geom_text()` incluir texto con porcentajes arriba de cada barra
+
+```{r}
+ggplot(mpg,aes(drv,..prop..,group=1,fill(drv)))+ 
+    geom_bar() + 
+    scale_x_discrete(name="Drv")+ scale_y_continuous(name="Porcentaje",labels = scales::percent)+
+    scale_color_brewer(name="Paired",aesthetics = "fill")
+```
+
+
+
+
+
+## Ejercicio 4
+
+Los datos que vamos a utilizar en este ejercicio están disponibles en el catálogo de datos abiertos uruguay https://catalogodatos.gub.uy.
+Los datos que seleccioné son sobre las emisiones de dióxido de carbono (CO2) correspondientes a las actividades de quema de los combustibles en las industrias de la energía y los sectores de consumo. Se incluyen también emisiones de CO2 provenientes de la quema de biomasa y de bunkers internacionales, las cuales se presentan como partidas informativas ya que no se consideran en los totales. En el siguiente link se encuentrán los datos y los meta datos con información que describe la base de datos https://catalogodatos.gub.uy/dataset/miem-emisiones-de-co2-por-sector.
+
+Por simplicidad te damos los datos restructurados (veremos como se hace más adelante en el curso), el archivo se llama datos_emisión.csv, contiene tres columnas AÑO, fuente y emisión.
+
+1. Leer los datos usando el paquete `readr` y la función `read_csv`, guardarlos en un objeto llamado `datos`.
+
+2. Usando las funciones de R base obtenga qué fuentes tienen la emisión máxima. Recuerde que TOTAL debería ser excluído para esta respuesta así como los subtotales.
+
+3. ¿En qué año se dió la emisión máxima para la fuente que respondió en la pregunta anterior?
+
+4. Usando las funciones de R base obtenga las 5 fuentes, sin incluir TOTAL ni subtotales, qué tienen un valor medio de emisión a lo largo de todos los años más grandes. 
+
+5. Usando `ggplot2` realice un gráfico de las emisiones a lo largo de los años para cada fuente. Utilice dos elementos geométricos, puntos y lineas. 
+Selecciones para dibujar solamente las 5 fuentes que a lo largo de los años tienen una emisión media mayor que el resto (respuesta de la pregunta 5).
+Las etiquetas de los ejes deben ser claras y describir las variables involucradas. Incluir un `caption` en la figura con algún comentario de interés que describa el gráfico.
+
+6. Relplique el siguiente gráfico usando `ggplot2`.
+ Incluir un `caption` en la figura con algún comentario de interés que describa el gráfico.
+
+
+![](pl1.pdf)
+
+
+7. Usando la librería `ggplot2` y `ggpmisc` replique el siguiente gráfico de las emisiones totales entre 1990 y 2016.
+Los puntos rojos indican los máximos locales  o picos de emisión de CO2 en Gg. 
+Use `library(help = ggpmisc)` para ver todas las funciones de la librería ggpmisc e identificar cual o cuales necesita para replicar el gráfico.
+Incluir un `caption` en la figura con algún comentario de interés que describa el gráfico.
+
+
+![](pl2.pdf)
+
