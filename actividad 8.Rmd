@@ -1,0 +1,102 @@
+---
+title: "actividad 8"
+output: html_document
+date: '2022-04-20'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 1
+Cargar la librería `tidyverse` y con los datos `mpg` usar las funciones que vimos de `dplyr` para  transformar los datos de la siguiente forma. 
+
+1. Seleccionar el conjunto de autos del 2008 que tienen `hwy` mayor a 31.
+
+```{r}
+library(tidyverse)
+filter(mpg,year=="2008", hwy>31)
+count(filter(mpg,year=="2008", hwy>31))
+```
+
+
+¿Cuantos autos son?
+Son 6 autos
+
+2. Seleccionar el conjunto de autos que tienen `cty` igual a 9 ó hwy es mayor a 90. ¿Cuantos autos son? 
+
+```{r}
+select(mpg,cty== 9)
+
+```
+
+
+3. Seleccioná la variable `displ` y `hwy`.
+
+```{r}
+select(mpg, displ, hwy)
+```
+
+
+4. Seleccioná desde la variable `trans` hasta la variable `hwy`.
+
+```{r}
+select(mpg,trans:hwy)
+```
+
+
+5. Produce un dataframe: marca, modelo, año, cantidad de cilindros y rendimiento en ciudad. Únicamente para los autos, toyota, camry.
+
+```{r}
+mpg %>% 
+select(manufacturer, model,year,cyl,cty) %>% 
+  filter(manufacturer %in% c("toyota","camry"))
+```
+
+
+6. Calcula el rendimiento promedio en ciudad para cada marca (`manufacturer`). ¿Cuál es el mejor rendimiento en ciudad? y el peor ?  
+```{r}
+aa<-
+  mpg %>% 
+  group_by(manufacturer) %>% 
+  summarise(promedio_cty=mean(cty))
+max(aa$promedio_cty)
+min(aa$promedio_cty)
+
+```
+
+
+
+7. Para cada marca: calcula el rendimiento promedio en ciudad, el error estandard de la media, y el rango
+
+```{r}
+ 
+```
+
+
+
+8. Mejora en el rendimiento: calcular el rendimiento promedio para cada marca, distinguiendo antes y después de 2004
+```{r}
+mpg %>% 
+  group_by(year) %>% 
+  group_by(manufacturer) %>% 
+  summarise(promedio_cty=mean(cty))
+mpg %>% 
+  filter(year>2004) %>% 
+  group_by(manufacturer) %>% 
+  summarise(promedio_cty=mean(cty))
+  
+
+```
+
+
+
+9. Calcular el rendimiento promedio en carretera (`hwy`), para 3 marcas seleccionadas aleatoriamente y ordena el resultado de menor a mayor
+
+
+10. Crear una nueva variable que transforme  `hwy` (millas por galón) en litros/100 km.
+Primero tenés que saber la conversión de galones a litros y de millas a kilómetros.
+
+`1 gallón = 3.78541 litros`
+
+`1 milla = 1.60934 km`
