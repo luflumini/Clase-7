@@ -122,7 +122,7 @@ ggplot(data = propinas, aes(x = sexo, fill = sexo)) +
 #de datos.
 #theme te da control sobre las fuente, el fondo, ticks, etc.
 
-ggplot(data = propinas, aes(x = sexo, fill = sexo)) +
+ggplot(data = propina, aes(x = sexo, fill = sexo)) +
   geom_bar() + labs(x = "Sexo"
                     , y = "Cantidad"
                     , fill = "Sexo") +
