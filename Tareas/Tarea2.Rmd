@@ -6,6 +6,10 @@ output:
   pdf_document: default
   fig_caption: FALSE
 ---
+
+\newcommand{\m}{\ \newline\textcolor{blue}{Comentario: }\textcolor{red}}
+\renewcommand\fbox{\textcolor{red}{Comentario: }\newline\fcolorbox{red}{white}}
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, tidy.opts = list(width.cutoff = 50), tidy = TRUE, fig.pos = 'h', out.extra = '')
 ```
@@ -67,15 +71,14 @@ library(ggplot2)
 ggplot(data = gapminder, aes(x=year,y=lifeExp,colour=continent)) + geom_point() + geom_smooth(method = "lm", se=FALSE) + labs(caption = "se ve un crecimiento de la expectativa de vida en todos los continentes, siendo mas notoria en Asia")
 ```
 
-
+\m{Correcta visualización. Falta agregar el caption y comentar el gráfico}
 
 
 2. Omitir la capa de  `geom_point()` del gráfico anterior. Las lineas aún aparecen aunque los puntos no. ¿Porqué sucede esto? 
 
 Porque esta es solamente una capa, los datos estan cargados pero no directamente asociados al gráfico de disperción. 
 
-
-
+\m{Si, las capas se pueden trabajar de forma casi independiente puesto que los datos se mantienen en otra capa.}
 
 3. El siguiente es un gráfico de dispersión entre `lifeExp` y `gdpPercap`  coloreado por la variable `continent`. Usando como elemento estético color (`aes()`) nosotros podemos distinguir los distintos continentes usando diferentes colores de similar manera usando forma (`shape`).
 
@@ -95,6 +98,7 @@ ggplot(gapminder, aes(year, gdpPercap,color=country)) + geom_line() + facet_grid
   theme(axis.text.x = element_text(size = 8, color = "black",angle = 65), legend.position = 'none') + labs(caption = "Mientras que en Africa el creciemiento es mucho más lento, en continentes como Asia, el crecimiento esta siendo mucho más exponencial")
 ```
 
+\m{No hay captio ni comentarios. El color por país es mejor omitirlo porque distintos países pueden tener el mismo.}
 
 
 5. Usando los datos `gapminder` seleccione una visualización que describa algún aspecto de los datos que no exploramos. Comente algo interesante que se puede aprender de su gráfico.
@@ -110,7 +114,9 @@ gapminder %>%
      theme(axis.text.x = element_text(size = 8, color = "black",angle = 65))
 ```
 
+\m{¿Cuál es la explicación? El caption? No compila al no cargar las librerias necesarias (en este caso magrittr)}
 
+\fbox{2/5}
 
 ## Ejercicio 2
 
@@ -132,6 +138,10 @@ ggplot(mpg,aes(drv,fill=drv))+
 
 Hay que seleccionar una de tipo discreta
 
+\m{No hay comentarios del gráfico, no hay caption. Falta ordenar de forma descendente las barras, agregar labels y titulos informativos}
+
+\fbox{2/4}
+
 ## Ejercicio 3
 
  Usando como base el gráfico del Ejercicio 2:
@@ -150,8 +160,9 @@ ggplot(mpg,aes(drv,..prop..,group=1,fill(drv)))+
     scale_color_brewer(name="Paired",aesthetics = "fill")
 ```
 
+\m{Correcto uso de porcentaje aunque no se usa geom text y no se esta construyendo sobre el gráfico anterior, no tienen el mismo color.}
 
-
+\fbox{1/3}
 
 
 ## Ejercicio 4
@@ -188,3 +199,7 @@ Incluir un `caption` en la figura con algún comentario de interés que describa
 
 ![](pl2.pdf)
 
+\fbox{0/7}
+
+
+\fbox{5/19. Falta mucho...Consultar ante dudas e intentar terminar el deber. Y verificar que compile}
